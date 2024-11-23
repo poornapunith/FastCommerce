@@ -8,7 +8,7 @@ public class FastCommerceApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(FastCommerceApplication.class, args);
-		System.out.println("Hello World!");
+
 	}
 
 }
