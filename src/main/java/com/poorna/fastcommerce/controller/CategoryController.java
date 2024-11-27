@@ -2,7 +2,9 @@ package com.poorna.fastcommerce.controller;
 
 import com.poorna.fastcommerce.model.Category;
 import com.poorna.fastcommerce.service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +25,7 @@ public class CategoryController {
     }
 
     @PostMapping("/public/categories")
-    public ResponseEntity<String> createCategory(@RequestBody Category category)
+    public ResponseEntity<String> createCategory(@Valid @RequestBody Category category)
     {
         return categoryService.createCategory(category);
     }

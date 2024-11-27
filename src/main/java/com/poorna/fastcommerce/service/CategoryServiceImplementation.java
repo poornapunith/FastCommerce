@@ -1,5 +1,7 @@
 package com.poorna.fastcommerce.service;
 
+import com.poorna.fastcommerce.exceptionhandling.customexceptions.EmptyListException;
+import com.poorna.fastcommerce.exceptionhandling.customexceptions.ResourceNotFoundException;
 import com.poorna.fastcommerce.model.Category;
 import com.poorna.fastcommerce.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,11 @@ public class CategoryServiceImplementation implements CategoryService {
 
     @Override
     public ResponseEntity<List<Category>> getAllCategories() {
-        return new ResponseEntity<>(categoryRepository.findAll(), HttpStatus.OK);
+        List<Category> categories = categoryRepository.findAll();
+        if (categories.isEmpty()) {
+            throw new EmptyListException("No categories found");
+        }
+        return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
     @Override
@@ -30,11 +36,7 @@ public class CategoryServiceImplementation implements CategoryService {
     @Override
     public ResponseEntity<String> deleteCategory(Long id) {
 
-        Category category = categoryRepository.findById(id).orElse(null);
-        if (category == null)
-        {
-            return new ResponseEntity<>("Category not found", HttpStatus.NOT_FOUND);
-        }
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category with id : "+id+" not found"));
         categoryRepository.delete(category);
         return new ResponseEntity<>(category.toString() + "removed", HttpStatus.OK);
     }
@@ -42,12 +44,7 @@ public class CategoryServiceImplementation implements CategoryService {
     @Override
     public ResponseEntity<String> updateCategory(Long id, Category category) {
 
-        Category existingCategory = categoryRepository.findById(id).orElse(null);
-
-        if (existingCategory == null)
-        {
-            return new ResponseEntity<>("Category not found", HttpStatus.NOT_FOUND);
-        }
+        Category existingCategory = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category with id : "+id+" not found"));
 
         existingCategory.setCategoryName(category.getCategoryName());
         return new ResponseEntity<>(categoryRepository.save(existingCategory) + "updated", HttpStatus.OK);
