@@ -2,6 +2,7 @@ package com.poorna.fastcommerce.controller;
 
 import com.poorna.fastcommerce.model.Product;
 import com.poorna.fastcommerce.payload.ProductDTO;
+import com.poorna.fastcommerce.payload.ProductResponse;
 import com.poorna.fastcommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,5 +21,17 @@ public class ProductController {
 
         ProductDTO productDTO = productService.addProduct(categoryId,product);
         return new ResponseEntity<>(productDTO, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/public/products")
+    public ResponseEntity<ProductResponse> getAllProducts() {
+        ProductResponse productResponse = productService.getAllProducts();
+        return new ResponseEntity<>(productResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/public/categories/{categoryId}/products")
+    public ResponseEntity<ProductResponse> getProductsByCategory(@PathVariable Long categoryId) {
+        ProductResponse productResponse = productService.searchByCategory(categoryId);
+        return new ResponseEntity<>(productResponse, HttpStatus.OK);
     }
 }
